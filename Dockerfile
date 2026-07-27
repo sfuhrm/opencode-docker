@@ -1,36 +1,21 @@
-FROM debian:13-slim AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
 
-ENV DEBIAN_FRONTEND=noninteractive
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-        unzip && \
+RUN apk add --no-cache bash curl ca-certificates unzip tar && \
     curl -fsSL https://opencode.ai/install | bash && \
     curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xz -C /opt && \
     curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip && \
     unzip -q /tmp/gradle.zip -d /opt && \
-    rm /tmp/gradle.zip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm /tmp/gradle.zip
 
-FROM debian:13-slim
+FROM eclipse-temurin:25-jdk-alpine
 
-ENV DEBIAN_FRONTEND=noninteractive
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-        screen \
-        openjdk-25-jdk && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates screen
 
 COPY --from=builder /root/.opencode /root/.opencode
 COPY --from=builder /opt/apache-maven-${MAVEN_VERSION} /opt/apache-maven-${MAVEN_VERSION}
@@ -39,7 +24,7 @@ COPY --from=builder /opt/gradle-${GRADLE_VERSION} /opt/gradle-${GRADLE_VERSION}
 RUN ln -sf /root/.opencode/bin/opencode /usr/local/bin/opencode && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/local/bin/mvn && \
     ln -sf /opt/gradle-${GRADLE_VERSION}/bin/gradle /usr/local/bin/gradle && \
-    useradd -m user && \
+    adduser -D user && \
     mkdir -p /workspace
 
 WORKDIR /workspace
