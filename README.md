@@ -5,10 +5,10 @@ Docker container with Java development tools and opencode CLI.
 ## Included Tools
 
 - OpenJDK 25
-- Maven
-- Gradle
+- Apache Maven 3.9.16
+- Gradle 9.6.1
 - opencode CLI
-- curl, wget, unzip, screen
+- curl, ca-certificates, unzip, screen
 
 ## Quick Start
 
@@ -20,6 +20,12 @@ docker run -it ghcr.io/<username>/opencode-dev-env
 
 ```bash
 docker build -t opencode-dev-env .
+```
+
+Override versions with build args:
+
+```bash
+docker build --build-arg MAVEN_VERSION=3.9.16 --build-arg GRADLE_VERSION=9.6.1 -t opencode-dev-env .
 ```
 
 ## Multi-Platform Build
