@@ -10,8 +10,7 @@ RUN apt-get update && \
         ca-certificates \
         unzip \
         screen \
-        openjdk-25-jdk 2>/dev/null || \
-        (apt-get install -y --no-install-recommends openjdk-17-jdk || apt-get install -y --no-install-recommends openjdk-21-jdk || true) && \
+        openjdk-25-jdk && \
     curl -fsSL https://opencode.ai/install | bash && \
     ln -sf /root/.opencode/bin/opencode /usr/local/bin/opencode && \
     curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xz -C /opt && \
