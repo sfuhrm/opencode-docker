@@ -1,0 +1,74 @@
+name: Prune GHCR images
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types: [completed]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    permissions:
+      packages: write
+
+    steps:
+      - name: Prune old versions
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const packageName = context.repo.repo;
+
+            let versions;
+            try {
+              versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
+                package_type: 'container',
+                package_name: packageName,
+                org: owner,
+              });
+            } catch {
+              versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByUser({
+                package_type: 'container',
+                package_name: packageName,
+                username: owner,
+              });
+            }
+
+            const sorted = versions.data
+              .filter(v => v.metadata?.container?.tags?.length > 0)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            const toDelete = sorted.slice(5);
+
+            console.log(`Found ${sorted.length} tagged versions, deleting ${toDelete.length}`);
+
+            for (const version of toDelete) {
+              try {
+                await github.rest.packages.deletePackageVersionForOrg({
+                  package_type: 'container',
+                  package_name: packageName,
+                  org: owner,
+                  package_version_id: version.id,
+                });
+                console.log(`Deleted version ${version.id} (${version.metadata.container.tags.join(', ')})`);
+              } catch {
+                try {
+                  await github.rest.packages.deletePackageVersionForUser({
+                    package_type: 'container',
+                    package_name: packageName,
+                    username: owner,
+                    package_version_id: version.id,
+                  });
+                  console.log(`Deleted version ${version.id} (${version.metadata.container.tags.join(', ')})`);
+                } catch (e) {
+                  console.log(`Failed to delete version ${version.id}: ${e.message}`);
+                }
+              }
+            }
