@@ -15,7 +15,7 @@ FROM eclipse-temurin:25-jdk-alpine
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
 
-RUN apk add --no-cache curl ca-certificates screen
+RUN apk add --no-cache bash curl ca-certificates screen
 
 COPY --from=builder /root/.opencode /root/.opencode
 COPY --from=builder /opt/apache-maven-${MAVEN_VERSION} /opt/apache-maven-${MAVEN_VERSION}
@@ -26,10 +26,11 @@ RUN rm -rf /opt/apache-maven-${MAVEN_VERSION}/src \
            /opt/gradle-${GRADLE_VERSION}/src \
            /opt/gradle-${GRADLE_VERSION}/docs \
            /opt/gradle-${GRADLE_VERSION}/kotlin && \
-    chmod +x /root/.opencode/bin/opencode && \
-    ln -sf /root/.opencode/bin/opencode /usr/local/bin/opencode && \
+    cp /root/.opencode/bin/opencode /usr/local/bin/opencode && \
+    chmod +x /usr/local/bin/opencode && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/local/bin/mvn && \
     ln -sf /opt/gradle-${GRADLE_VERSION}/bin/gradle /usr/local/bin/gradle && \
+    chmod -R a+rX /root/.opencode && \
     adduser -D user && \
     mkdir -p /workspace
 
