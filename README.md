@@ -18,23 +18,23 @@ Docker container with Java development tools and opencode CLI.
 ## Quick Start
 
 ```bash
-docker run -it ghcr.io/<username>/opencode-dev-env
+docker run -it ghcr.io/<username>/opencode-docker
 ```
 
 ## Build
 
 ```bash
-docker build -t opencode-dev-env .
+docker build -t opencode-docker .
 ```
 
 Override versions with build args:
 
 ```bash
-docker build --build-arg MAVEN_VERSION=3.9.16 --build-arg GRADLE_VERSION=9.6.1 -t opencode-dev-env .
+docker build --build-arg MAVEN_VERSION=3.9.16 --build-arg GRADLE_VERSION=9.6.1 -t opencode-docker .
 ```
 
 ## Multi-Platform Build
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t opencode-dev-env --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t opencode-docker --push .
 ```

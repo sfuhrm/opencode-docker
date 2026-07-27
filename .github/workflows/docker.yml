@@ -65,8 +65,8 @@ jobs:
         with:
           context: .
           load: true
-          tags: opencode-dev-env:test
+          tags: opencode-docker:test
           cache-from: type=gha
 
       - name: Verify opencode
-        run: docker run --rm opencode-dev-env:test opencode --version
+        run: docker run --rm opencode-docker:test opencode --version
