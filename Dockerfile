@@ -21,7 +21,8 @@ COPY --from=builder /root/.opencode /root/.opencode
 COPY --from=builder /opt/apache-maven-${MAVEN_VERSION} /opt/apache-maven-${MAVEN_VERSION}
 COPY --from=builder /opt/gradle-${GRADLE_VERSION} /opt/gradle-${GRADLE_VERSION}
 
-RUN ln -sf /root/.opencode/bin/opencode /usr/local/bin/opencode && \
+RUN chmod +x /root/.opencode/bin/opencode && \
+    ln -sf /root/.opencode/bin/opencode /usr/local/bin/opencode && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/local/bin/mvn && \
     ln -sf /opt/gradle-${GRADLE_VERSION}/bin/gradle /usr/local/bin/gradle && \
     adduser -D user && \
