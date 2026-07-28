@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/sfuhrm/opencode-docker)
 ![GitHub Actions](https://img.shields.io/github/actions/workflow/status/sfuhrm/opencode-docker/docker.yml?label=GHCR)
-![Docker Hub](https://img.shields.io/docker/pulls/sfuhrm/opencode-docker?label=Docker%20Hub)
+![Docker Pulls](https://img.shields.io/docker/pulls/sfuhrm/opencode-docker?label=Dockerhub%20Pulls)
 ![Image Size](https://img.shields.io/docker/image-size/sfuhrm/opencode-docker/master?label=image%20size)
 
 Docker container with Java development tools and opencode CLI.
@@ -18,7 +18,7 @@ Docker container with Java development tools and opencode CLI.
 ## Quick Start
 
 ```bash
-docker run -it ghcr.io/<username>/opencode-docker
+docker run -it sfuhrm/opencode-docker
 ```
 
 ## Build
