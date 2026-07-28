@@ -1,4 +1,4 @@
-# opencode Development Environment
+# opencode Java Development Environment
 
 ![License](https://img.shields.io/github/license/sfuhrm/opencode-docker?color=blue)
 ![GitHub Actions](https://img.shields.io/github/actions/workflow/status/sfuhrm/opencode-docker/docker.yml?label=GHCR)
