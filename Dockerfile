@@ -15,6 +15,12 @@ FROM eclipse-temurin:25-jdk-alpine
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
 
+LABEL org.opencontainers.image.title="opencode Development Environment" \
+      org.opencontainers.image.description="Docker container with Java development tools and opencode CLI" \
+      org.opencontainers.image.vendor="sfuhrm" \
+      org.opencontainers.image.source="https://github.com/sfuhrm/opencode-docker" \
+      org.opencontainers.image.licenses="Apache-2.0"
+
 RUN apk add --no-cache bash curl ca-certificates screen
 
 COPY --from=builder /root/.opencode /root/.opencode
@@ -36,5 +42,7 @@ RUN rm -rf /opt/apache-maven-${MAVEN_VERSION}/src \
 
 WORKDIR /workspace
 USER user
+
+VOLUME /workspace
 
 CMD ["opencode"]

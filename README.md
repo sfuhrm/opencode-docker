@@ -1,6 +1,6 @@
 # opencode Development Environment
 
-![License](https://img.shields.io/github/license/sfuhrm/opencode-docker)
+![License](https://img.shields.io/github/license/sfuhrm/opencode-docker?color=blue)
 ![GitHub Actions](https://img.shields.io/github/actions/workflow/status/sfuhrm/opencode-docker/docker.yml?label=GHCR)
 ![Docker Pulls](https://img.shields.io/docker/pulls/sfuhrm/opencode-docker?label=Dockerhub%20Pulls)
 ![Image Size](https://img.shields.io/docker/image-size/sfuhrm/opencode-docker/master?label=image%20size)
