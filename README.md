@@ -5,7 +5,7 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/sfuhrm/opencode-docker?label=Dockerhub%20Pulls)
 ![Image Size](https://img.shields.io/docker/image-size/sfuhrm/opencode-docker/master?label=image%20size)
 
-Docker container with Java development tools and opencode CLI.
+[Docker image](https://hub.docker.com/r/sfuhrm/opencode-docker) with Java development tools and opencode CLI.
 
 ## Included Tools
 
