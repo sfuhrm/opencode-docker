@@ -1,0 +1,46 @@
+name: Trivy Security Scan
+
+on:
+  schedule:
+    - cron: '15 11 * * 2'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t opencode-docker:scan .
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'opencode-docker:scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy table output
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'opencode-docker:scan'
+          format: 'table'
+          output: 'trivy-results.txt'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload SARIF report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-sarif-report
+          path: trivy-results.sarif
+          retention-days: 30
+
+      - name: Upload text report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-text-report
+          path: trivy-results.txt
+          retention-days: 30
