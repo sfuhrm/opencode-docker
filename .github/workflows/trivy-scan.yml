@@ -16,7 +16,7 @@ jobs:
         run: docker build -t opencode-docker:scan .
 
       - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'opencode-docker:scan'
           format: 'sarif'
@@ -24,7 +24,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Run Trivy table output
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'opencode-docker:scan'
           format: 'table'
