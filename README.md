@@ -21,6 +21,43 @@ Docker container with Java development tools and opencode CLI.
 docker run -it sfuhrm/opencode-docker
 ```
 
+## Volumes & Mounting
+
+Mount your local project directory into the container:
+
+```bash
+docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker
+```
+
+### Persist Maven/Gradle Cache
+
+```bash
+docker run -it \
+  -v $(pwd):/workspace \
+  -v maven-cache:/root/.m2 \
+  -v gradle-cache:/root/.gradle \
+  sfuhrm/opencode-docker
+```
+
+### Mount SSH Keys (for Git access)
+
+```bash
+docker run -it \
+  -v $(pwd):/workspace \
+  -v ~/.ssh:/home/user/.ssh:ro \
+  sfuhrm/opencode-docker
+```
+
+## Use Cases
+
+| Use Case | Command |
+|----------|---------|
+| Interactive development | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker` |
+| Run Maven build | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker mvn clean install` |
+| Run Gradle build | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker gradle build` |
+| One-off command | `docker run --rm -v $(pwd):/workspace sfuhrm/opencode-docker mvn -version` |
+| Background screen session | `docker run -d -v $(pwd):/workspace sfuhrm/opencode-docker screen -S dev` |
+
 ## Build
 
 ```bash
