@@ -5,10 +5,15 @@ ARG GRADLE_VERSION=9.6.1
 
 RUN apk add --no-cache bash curl ca-certificates unzip tar && \
     curl -fsSL https://opencode.ai/install | bash && \
-    curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xz -C /opt && \
+    curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -o /tmp/maven.tar.gz && \
+    curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512 -o /tmp/maven.tar.gz.sha512 && \
+    cd /tmp && sha512sum -c maven.tar.gz.sha512 && \
+    tar -xz -C /opt -f /tmp/maven.tar.gz && \
     curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip && \
+    curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha512 -o /tmp/gradle.zip.sha512 && \
+    cd /tmp && sha512sum -c gradle.zip.sha512 && \
     unzip -q /tmp/gradle.zip -d /opt && \
-    rm /tmp/gradle.zip && \
+    rm /tmp/maven.tar.gz /tmp/maven.tar.gz.sha512 /tmp/gradle.zip /tmp/gradle.zip.sha512 && \
     rm -rf /opt/apache-maven-${MAVEN_VERSION}/src \
            /opt/apache-maven-${MAVEN_VERSION}/docs \
            /opt/gradle-${GRADLE_VERSION}/src \
