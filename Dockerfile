@@ -3,15 +3,20 @@ FROM eclipse-temurin:25-jdk-alpine AS builder
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
 
-RUN apk add --no-cache bash curl ca-certificates unzip tar && \
+RUN set -eu && \
+    apk add --no-cache bash curl ca-certificates unzip tar && \
     curl -fsSL https://opencode.ai/install | bash && \
     curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -o /tmp/maven.tar.gz && \
     curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512 -o /tmp/maven.tar.gz.sha512 && \
-    cd /tmp && sha512sum -c maven.tar.gz.sha512 && \
+    expected_maven="$(tr -d '[:space:]' < /tmp/maven.tar.gz.sha512)" && \
+    actual_maven="$(sha512sum /tmp/maven.tar.gz | awk '{print $1}')" && \
+    [ "$expected_maven" = "$actual_maven" ] && \
     tar -xz -C /opt -f /tmp/maven.tar.gz && \
     curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip && \
     curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256 -o /tmp/gradle.zip.sha256 && \
-    cd /tmp && sha256sum -c gradle.zip.sha256 && \
+    expected_gradle="$(tr -d '[:space:]' < /tmp/gradle.zip.sha256)" && \
+    actual_gradle="$(sha256sum /tmp/gradle.zip | awk '{print $1}')" && \
+    [ "$expected_gradle" = "$actual_gradle" ] && \
     unzip -q /tmp/gradle.zip -d /opt && \
     rm /tmp/maven.tar.gz /tmp/maven.tar.gz.sha512 /tmp/gradle.zip /tmp/gradle.zip.sha256 && \
     rm -rf /opt/apache-maven-${MAVEN_VERSION}/src \

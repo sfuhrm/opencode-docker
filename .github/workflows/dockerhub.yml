@@ -13,7 +13,7 @@ permissions:
   packages: write
 
 env:
-  REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  REGISTRY_USERNAME: ${{ vars.DOCKERHUB_USERNAME || github.actor }}
 
 jobs:
   call-build:
@@ -21,6 +21,6 @@ jobs:
     with:
       registry: docker.io
       images: ${{ github.repository }}
-      registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      registry_username: ${{ vars.DOCKERHUB_USERNAME || github.actor }}
     secrets:
       registry_password: ${{ secrets.DOCKERHUB_TOKEN }}
