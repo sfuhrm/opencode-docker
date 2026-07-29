@@ -10,10 +10,10 @@ RUN apk add --no-cache bash curl ca-certificates unzip tar && \
     cd /tmp && sha512sum -c maven.tar.gz.sha512 && \
     tar -xz -C /opt -f /tmp/maven.tar.gz && \
     curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip && \
-    curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha512 -o /tmp/gradle.zip.sha512 && \
-    cd /tmp && sha512sum -c gradle.zip.sha512 && \
+    curl -fsSL https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256 -o /tmp/gradle.zip.sha256 && \
+    cd /tmp && sha256sum -c gradle.zip.sha256 && \
     unzip -q /tmp/gradle.zip -d /opt && \
-    rm /tmp/maven.tar.gz /tmp/maven.tar.gz.sha512 /tmp/gradle.zip /tmp/gradle.zip.sha512 && \
+    rm /tmp/maven.tar.gz /tmp/maven.tar.gz.sha512 /tmp/gradle.zip /tmp/gradle.zip.sha256 && \
     rm -rf /opt/apache-maven-${MAVEN_VERSION}/src \
            /opt/apache-maven-${MAVEN_VERSION}/docs \
            /opt/gradle-${GRADLE_VERSION}/src \
