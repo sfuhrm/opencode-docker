@@ -15,6 +15,5 @@ jobs:
       registry: ghcr.io
       images: ghcr.io/${{ github.repository }}
       registry_username: ${{ github.actor }}
-      needs_packages_permission: true
     secrets:
       registry_password: ${{ secrets.GITHUB_TOKEN }}

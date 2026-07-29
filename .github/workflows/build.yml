@@ -9,13 +9,10 @@ on:
       images:
         required: true
         type: string
-      needs_packages_permission:
-        required: false
-        type: boolean
-        default: false
-    secrets:
       registry_username:
         required: true
+        type: string
+    secrets:
       registry_password:
         required: true
 
@@ -24,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: ${{ inputs.needs_packages_permission && 'write' || 'none' }}
+      packages: write
 
     steps:
       - name: Checkout
@@ -41,7 +38,7 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: ${{ inputs.registry }}
-          username: ${{ secrets.registry_username }}
+          username: ${{ inputs.registry_username }}
           password: ${{ secrets.registry_password }}
 
       - name: Extract metadata

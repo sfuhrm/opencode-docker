@@ -8,13 +8,15 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
 jobs:
   call-build:
     uses: ./.github/workflows/build.yml
     with:
       registry: docker.io
       images: ${{ github.repository }}
-      needs_packages_permission: false
+      registry_username: ${{ env.REGISTRY_USERNAME }}
     secrets:
-      registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
       registry_password: ${{ secrets.DOCKERHUB_TOKEN }}
