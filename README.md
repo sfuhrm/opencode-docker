@@ -15,6 +15,7 @@ The container runs as a non-root user `user` (home directory `/home/user`).
 - Apache Maven 3.9.16
 - Gradle 9.6.1
 - opencode CLI 1.18.15
+- OpenSpec CLI 1.8.0 (Node.js 24 + npm)
 - Docker CLI with `docker compose` (connect to a host daemon via socket)
 - bash, curl, ca-certificates, unzip, tar, screen
 
@@ -98,6 +99,7 @@ docker build \
   --build-arg MAVEN_VERSION=3.9.16 \
   --build-arg GRADLE_VERSION=9.6.1 \
   --build-arg OPENCODE_VERSION=1.18.15 \
+  --build-arg OPENSPEC_VERSION=1.8.0 \
   -t opencode-docker .
 ```
 

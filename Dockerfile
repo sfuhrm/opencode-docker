@@ -30,6 +30,7 @@ FROM eclipse-temurin:25-jdk-alpine
 
 ARG MAVEN_VERSION=3.9.16
 ARG GRADLE_VERSION=9.6.1
+ARG OPENSPEC_VERSION=1.8.0
 
 LABEL org.opencontainers.image.title="opencode Development Environment" \
       org.opencontainers.image.description="Docker container with Java development tools and opencode CLI" \
@@ -37,7 +38,10 @@ LABEL org.opencontainers.image.title="opencode Development Environment" \
       org.opencontainers.image.source="https://github.com/sfuhrm/opencode-docker" \
       org.opencontainers.image.licenses="Apache-2.0"
 
-RUN apk add --no-cache bash curl ca-certificates unzip tar screen docker-cli docker-cli-compose
+RUN apk add --no-cache bash curl ca-certificates unzip tar screen docker-cli docker-cli-compose nodejs npm
+
+RUN npm install -g --no-fund --no-audit @fission-ai/openspec@${OPENSPEC_VERSION} && \
+    npm cache clean --force
 
 COPY --from=builder /opt/apache-maven-${MAVEN_VERSION} /opt/apache-maven-${MAVEN_VERSION}
 COPY --from=builder /opt/gradle-${GRADLE_VERSION} /opt/gradle-${GRADLE_VERSION}
