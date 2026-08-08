@@ -76,6 +76,52 @@ docker run -it \
 
 `--group-add` maps your host's `docker` group ID into the container so the non-root `user` can access the socket. Alternatively, run with `--user root`.
 
+## Shell Wrappers
+
+The repository ships two wrapper scripts so you don't have to remember the `docker run` flags.
+
+### `scripts/docker-run.sh` — run with the current directory mounted
+
+Mounts the current directory at `/workspace` and starts an interactive session:
+
+```bash
+./scripts/docker-run.sh
+```
+
+Pass a command to run it instead of the shell:
+
+```bash
+./scripts/docker-run.sh mvn -version
+./scripts/docker-run.sh opencode
+```
+
+The image name defaults to `sfuhrm/opencode-docker`; override it with `OPENCODE_IMAGE`:
+
+```bash
+OPENCODE_IMAGE=my-image ./scripts/docker-run.sh
+```
+
+### `scripts/dind-run.sh` — run with a Docker-in-Docker daemon
+
+Starts a privileged `docker:dind` sidecar and runs the dev container on a shared bridge network with `DOCKER_HOST` pointing at that daemon, so `docker`, `docker compose`, and `docker build` work from inside the container:
+
+```bash
+./scripts/dind-run.sh
+```
+
+- The sidecar requires `--privileged` (nested Docker needs kernel features like iptables and namespaces) and runs with `--restart unless-stopped`; images and containers persist in the `opencode-dind-data` volume.
+- The daemon listens on TCP port 2375 **without TLS** on an isolated Docker network. Fine for local development, but don't expose it publicly.
+- Stop the sidecar later with `docker rm -f opencode-dind`.
+- Overridable via env vars: `OPENCODE_IMAGE`, `DIND_IMAGE` (default `docker:29.7.1-dind`), `DIND_NAME`, `NETWORK`, `DATA_VOLUME`.
+
+Example commands inside the container:
+
+```bash
+docker run --rm hello-world
+docker build -t myapp .
+docker compose up -d
+```
+
 ## Use Cases
 
 | Use Case | Command |
