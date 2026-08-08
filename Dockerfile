@@ -60,7 +60,7 @@ LABEL org.opencontainers.image.title="opencode Development Environment" \
       org.opencontainers.image.source="https://github.com/sfuhrm/opencode-docker" \
       org.opencontainers.image.licenses="Apache-2.0"
 
-RUN apk add --no-cache bash curl ca-certificates unzip tar screen docker-cli docker-cli-compose nodejs npm
+RUN apk add --no-cache bash curl ca-certificates unzip tar screen docker-cli docker-cli-compose nodejs npm git ripgrep fd jq fzf
 
 RUN npm install -g --no-fund --no-audit @fission-ai/openspec@${OPENSPEC_VERSION} && \
     npm cache clean --force
