@@ -7,18 +7,21 @@
 
 [Docker image](https://hub.docker.com/r/sfuhrm/opencode-docker) with Java development tools and opencode CLI.
 
+The container runs as a non-root user `user` (home directory `/home/user`).
+
 ## Included Tools
 
 - OpenJDK 25
 - Apache Maven 3.9.16
 - Gradle 9.6.1
-- opencode CLI
-- curl, ca-certificates, unzip, screen
+- opencode CLI 1.18.15
+- Docker CLI with `docker compose` (connect to a host daemon via socket)
+- bash, curl, ca-certificates, unzip, tar, screen
 
 ## Quick Start
 
 ```bash
-docker run -it sfuhrm/opencode-docker
+docker run -it --rm sfuhrm/opencode-docker
 ```
 
 ## Volumes & Mounting
@@ -26,7 +29,7 @@ docker run -it sfuhrm/opencode-docker
 Mount your local project directory into the container:
 
 ```bash
-docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker
+docker run -it --rm -v $(pwd):/workspace sfuhrm/opencode-docker
 ```
 
 ### Persist Maven/Gradle Cache
@@ -34,8 +37,18 @@ docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker
 ```bash
 docker run -it \
   -v $(pwd):/workspace \
-  -v maven-cache:/root/.m2 \
-  -v gradle-cache:/root/.gradle \
+  -v maven-cache:/home/user/.m2 \
+  -v gradle-cache:/home/user/.gradle \
+  sfuhrm/opencode-docker
+```
+
+### Persist opencode Config & Auth
+
+```bash
+docker run -it \
+  -v $(pwd):/workspace \
+  -v opencode-config:/home/user/.config/opencode \
+  -v opencode-data:/home/user/.local/share/opencode \
   sfuhrm/opencode-docker
 ```
 
@@ -48,13 +61,27 @@ docker run -it \
   sfuhrm/opencode-docker
 ```
 
+### Use Docker from the Container
+
+The image ships with the Docker CLI (including `docker compose`). Point it at your host daemon by mounting the Docker socket:
+
+```bash
+docker run -it \
+  -v $(pwd):/workspace \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --group-add "$(getent group docker | cut -d: -f3)" \
+  sfuhrm/opencode-docker
+```
+
+`--group-add` maps your host's `docker` group ID into the container so the non-root `user` can access the socket. Alternatively, run with `--user root`.
+
 ## Use Cases
 
 | Use Case | Command |
 |----------|---------|
-| Interactive development | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker` |
-| Run Maven build | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker mvn clean install` |
-| Run Gradle build | `docker run -it -v $(pwd):/workspace sfuhrm/opencode-docker gradle build` |
+| Interactive development | `docker run -it --rm -v $(pwd):/workspace sfuhrm/opencode-docker` |
+| Run Maven build | `docker run -it --rm -v $(pwd):/workspace sfuhrm/opencode-docker mvn clean install` |
+| Run Gradle build | `docker run -it --rm -v $(pwd):/workspace sfuhrm/opencode-docker gradle build` |
 | One-off command | `docker run --rm -v $(pwd):/workspace sfuhrm/opencode-docker mvn -version` |
 | Background screen session | `docker run -d -v $(pwd):/workspace sfuhrm/opencode-docker screen -S dev` |
 
@@ -67,7 +94,11 @@ docker build -t opencode-docker .
 Override versions with build args:
 
 ```bash
-docker build --build-arg MAVEN_VERSION=3.9.16 --build-arg GRADLE_VERSION=9.6.1 -t opencode-docker .
+docker build \
+  --build-arg MAVEN_VERSION=3.9.16 \
+  --build-arg GRADLE_VERSION=9.6.1 \
+  --build-arg OPENCODE_VERSION=1.18.15 \
+  -t opencode-docker .
 ```
 
 ## Multi-Platform Build
